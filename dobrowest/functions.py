@@ -14,21 +14,24 @@ __author__ = 'adam'
 import string
 import os
 from random import choice
+import hashlib
+
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
-import hashlib
 
 
 CURRENT_URL_TAG = 'urlTag'
 
 
 def get_path_to_image( instance, filename ):
-	filename, ext = os.path.splitext(filename)
-	md5hash = hashlib.md5(filename).hexdigest()
-	hashname = "{name}{extension}".format(filename=md5hash(filename),extension=ext)
-	prefix = instance.__class__.__name__.lower()
-	return os.path.join(prefix, hashname[:2], hashname[2:4], hashname)
-
+	ret = None
+	if filename:
+		me, ext = os.path.splitext(filename)
+		md5hash = hashlib.md5(filename).hexdigest()
+		hashname = "{name}{extension}".format(name = md5hash, extension = ext)
+		prefix = instance.__class__.__name__.lower()
+		ret = os.path.join(prefix, hashname[:2], hashname[2:4], hashname)
+	return ret
 
 # -----------------------------------------------------
 #

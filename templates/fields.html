@@ -7,7 +7,22 @@
                 <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
+
     </div>
 {% endfor %}
 
+{% comment %}
+<form action="{% url 'ideas:add' %}" method="post">
+    {% csrf_token %}
+    {{ form.text.label_tag }} {{ form.text }} {{ form.text.help_text }}
+    {{ form.text.errors }}
+    {{ form.type.label_tag }} {{ form.type }}{{ form.type.help_text }}
+    {{ form.category }}
+    {{ form.tag }}
+    {{ form.foto }}
+    {{ form.dobro_like }}
+    {{ form.radost_like }}
+    {{ form.razvitie_like }}
+    <input type="submit" class="button" value="Добавить">
+</form>     {% endcomment %}
 

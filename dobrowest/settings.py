@@ -87,6 +87,12 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'dobrowest.urls'
 
+# CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': '127.0.0.1:8000',
+#    }
+#}
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -149,15 +155,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-#
-#------------------------------------------------------------------------------------------
-#
-#   Изменения, которые были внесены мною в проект
-#
-#------------------------------------------------------------------------------------------
-STATICFILES_DIRS = ("static", '/Users/adam/pyProjects/envDobra/bin/dobrowest/static')
+STATIC_ROOT = ''
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static', 'fotos'),
+    # "static", '/Users/adam/pyProjects/envDobra/bin/dobrowest/static',
+    #'/Users/adam/pyProjects/envDobra/bin/dobrowest/static/fotos',
+)
+MEDIA_URL = '/static/fotos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'fotos')
+THUMBNAIL_DEBUG = True
 # ------------------------------------------------------------------------------------------
 #  Изменения касаемые расширения стандатной аутификации
 # ------------------------------------------------------------------------------------------

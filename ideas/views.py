@@ -3,9 +3,9 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView
+
 from accounts.models import CustomUser
 from facts.models import Facts
-from facts.views import FactDetail
 from ideas.forms import IdeasForm
 from ideas.models import Ideas
 
@@ -39,14 +39,14 @@ class IdeasCreate(CreateView):
     template_name = 'idea_create.html'
     #succes_url = '/success/'
 
-    #def get_context_data( self, **kwargs ):
-    #    ret = super(IdeasCreate, self).get_context_data(**kwargs)
-    #    ret.update({ "username": auth.get_user(self.request).username })
+    def get_context_data( self, **kwargs ):
+        ret = super(IdeasCreate, self).get_context_data(**kwargs)
+        ret.update({ "username": auth.get_user(self.request).username })
     #    fact_id = self.request.session['fact_id']
     #    ret['object'] = Facts.objects.get(id = fact_id)
     #    ret['form_create'] = IdeasForm(initial = { 'fact': fact_id })
     #    ret['ideas_list'] = Ideas.objects.filter(fact_id = fact_id)
-    #    return ret
+        return ret
 
     def form_valid( self, form ):
         id = self.request.session['fact_id']
