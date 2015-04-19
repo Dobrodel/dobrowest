@@ -1,5 +1,7 @@
 {% load staticfiles %}
-{% csrf_token %}
+
+{% load thumbnail %}
+
 {% load pagination_tags %}
 {% autopaginate ideas_list 2 %}
 {% block ideas_block %}
@@ -16,11 +18,12 @@
                     Тип: {{ idea.get_idea_type }}<br>
                     Категории: {{ idea.get_tags_list }}<br>
                     Фото:
-                        {% if idea.foto %}
-                            <img src="{{ idea.foto.url }}" />
-                        {% else %}
-                            отсутствует
-                        {% endif %}
+                            {% thumbnail idea.foto "100x700" as im %}
+                                <img style="margin:{{ im|margin:"100x700" }}" src="{{ im.url }}" width="{{ im.x }}"
+                                     height="{{ im.y }}">
+                            {% empty %}
+                                отсутствует
+                            {% endthumbnail %}
                         <br>
                     Текст: {{ idea.text|safe }} </p>
                 <hr>

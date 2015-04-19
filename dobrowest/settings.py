@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.vk',
     #'django_extensions',
     'pagination',
+    'sorl.thumbnail',
     # Мои модули
     'invitations',
     'accounts',
