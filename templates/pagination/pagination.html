@@ -1,0 +1,43 @@
+{% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <span data-tooltip class="has-tip" title="Предыдущая страница">
+                    <li class="arrow"><a href="?page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">&uarr;</a></li>
+                </span>
+                <span data-tooltip class="has-tip" title="Первая страница">
+                    <li class="arrow"><a href="?page=1">&equiv;</a></li>
+                </span>
+            {% else %}
+                <span data-tooltip class="has-tip" title="Предыдущая страница">
+                    <li class="arrow unavailable"><a href="">&uarr;</a></li>
+                </span>
+                <span data-tooltip class="has-tip" title="Первая страница">
+                    <li class="arrow unavailable"><a href="">&equiv;</a></li>
+                </span>
+            {% endif %}
+            {% for page in pages %}
+                {% if page %}
+                    {% ifequal page page_obj.number %}
+                        <li class="current"><a class="current page">{{ page }}</a></li>
+                    {% else %}
+                        <li><a href="?page={{ page }}{{ getvars }}{{ hashtag }}" class="page">{{ page }}</a></li>
+                    {% endifequal %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <span data-tooltip class="has-tip" title="Последняя страница">
+                    <li class="arrow"><a href="?page={{ page_obj.paginator.num_pages }}">&equiv;</a></li>
+                <span data-tooltip class="has-tip" title="Следующая страница">
+                    <li class="arrow"><a href="?page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">&darr;</a></li>
+            {% else %}
+                <span data-tooltip class="has-tip" title="Последняя страница">
+                    <li class="arrow unavailable"><a href="">&equiv;</a></li>
+                </span>
+                <span data-tooltip class="has-tip" title="Следующая страница">
+                    <li class="arrow unavailable"><a href="">&darr;</a></li>
+                </span>
+            {% endif %}
+        </ul>
+{% endif %}

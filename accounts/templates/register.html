@@ -1,0 +1,14 @@
+{% extends 'dobroboad.html' %}
+
+{%  block login %}
+    <div class="large-offset-3 large-6 columns">
+        <form action="/auth/register/" method="post">
+            <fieldset>
+                <legend><h4>Регистрационная форма</h4></legend>
+                {% csrf_token %}
+                {{ form }}
+                <input class="button expand success" type="submit" value="Регистрация">
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

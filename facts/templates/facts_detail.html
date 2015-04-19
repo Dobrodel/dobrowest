@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+{% load staticfiles %}
+{% block fact_detail %}
+    <div class="row">
+        <div class="large-8 large-offset-0 columns">
+            <h3><a href="{{ object.source_url }}">{{ object.title }}</a></h3>
+            <div>{{ object.date|date:"d.m.Y в H:i" }}</div>
+            <div>{{ object.foto }}</div>
+            <p>{{ object.text }}</p>
+            <hr>
+        </div>
+        {% if username %}
+            <div class="large-4 large-offset-0 columns">
+            <a href="" class="button">Редактировать</a>
+            <a href="" class="button">Удалить</a>
+            </div>
+        {% endif %}
+    </div>
+    {% if ideas_list %}
+        {% include 'ideas_list.html' %}
+        {% include 'idea_form.html' with form=form_create %}
+    {% endif %}
+{% endblock %}
+
+
+

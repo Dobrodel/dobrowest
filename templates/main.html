@@ -1,0 +1,38 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
+<html>
+    <meta charset="utf-8">
+	<head>
+		<title>Добрые вести</title>
+		<link rel="stylesheet" href="{% static "/static/css/foundation.css" %}" type="text/css">
+	</head>
+	<body>
+        <div class="top-bar">
+            <section class="top-bar-section">
+                <ul class="right">
+                    {% if username %}
+                        <li>
+                            <a href="{% url 'account_logout' %}">Выход ({{ username }})</a>
+                            <a href="{% url 'send-invitation' %}">Пригласить друга</a>
+
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'account_login' %}">Вход</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </section>
+        </div>
+		<h1><a href="/">Свежие вести</a></h1>
+        <h5><a href="/admin/">Администратор</a></h5>
+		<div class="large-offset-3 large-6 columns">
+		    {% block factsblock %}{% endblock %}
+            {% block fact_detail %} {% endblock %}
+            {% block idea_create %} {% endblock %}
+            {% block login %}{% endblock %}
+            {% block invite %}{% endblock %}
+            {% block thanks %}{% endblock %}
+    	</div>
+	</body>
+</html>

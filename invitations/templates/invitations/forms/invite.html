@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% load staticfiles %}
+
+{% block invite %}
+        <form action="{% url 'send-invitation' %}" method="post">
+            {% csrf_token %}
+            {% if success_message %}
+                {{ success_message }}
+            {% else %}
+                {% include "fields.html" %}
+                <input type="submit" class="button" value="Отправить">
+            {% endif %}
+        </form>
+{% endblock %}

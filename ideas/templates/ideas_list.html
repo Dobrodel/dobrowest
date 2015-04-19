@@ -1,0 +1,36 @@
+{% load staticfiles %}
+{% csrf_token %}
+{% load pagination_tags %}
+{% autopaginate ideas_list 2 %}
+{% block ideas_block %}
+
+    <div class="row">
+        <div class="large-1 large-offset-0  columns">
+            <div class="pagination">{% paginate %} </div>
+        </div>
+        <div class="large-10 large-offset-1  columns">
+            {% for idea in ideas_list %}
+                    <p>Дата добавления: {{ idea.date_create|date:"d.m.Y в H:i" }}<br>
+                    Дата обновления: {{ idea.date_update|date:"d.m.Y в H:i" }}<br>
+                    Автор: {{ idea.get_author_name }}<br>
+                    Тип: {{ idea.get_idea_type }}<br>
+                    Категории: {{ idea.get_tags_list }}<br>
+                    Фото:
+                        {% if idea.foto %}
+                            <img src="{{ idea.foto.url }}" />
+                        {% else %}
+                            отсутствует
+                        {% endif %}
+                        <br>
+                    Текст: {{ idea.text|safe }} </p>
+                <hr>
+            {% empty %}
+                <p>Новых идей не обнаружено :(</p>
+
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+{% endblock %}
