@@ -3,10 +3,10 @@
 {% autopaginate ideas_list 2 %}
 {% block ideas_block %}
     <div class="row">
-        <div class="large-1 large-offset-0  columns">
+        <div class="large-0 large-offset-0  columns">
             <div class="pagination">{% paginate %} </div>
         </div>
-        <div class="large-10 large-offset-1  columns">
+        <div class="large-10 large-offset-0  columns">
             {% for idea in ideas_list %}
                 <p>Дата добавления: {{ idea.date_create|date:"d.m.Y в H:i" }}<br>
                     Дата обновления: {{ idea.date_update|date:"d.m.Y в H:i" }}<br>
@@ -14,15 +14,35 @@
                     Тип: {{ idea.get_idea_type }}<br>
                     Категории: {{ idea.get_tags_list }}<br>
                     Фото: <br>
-                    {% load thumbnail %}
-                    {% thumbnail idea.foto "100x100" as im %}
-                        <img style="margin:{{ im|margin:"100x100" }}" src="{{ im.url }}"
-                             width="{{ im.x }}"
-                             height="{{ im.y }}">
-                    {% empty %}
-                        отсутствует
-                    {% endthumbnail %} <br>
-                    Текст: {{ idea.text|safe }} </p>
+                    {% if idea.foto %}
+                        {% load thumbnail %}
+                        {% thumbnail idea.foto.path "100x100" as im %}
+                            <img target="_blank" style="margin:{{ im|margin:"100x100" }}" src="{{ im.url }} "
+                                 width="{{ im.x }}"
+                                 height="{{ im.y }}">
+                        {% empty %}
+                            отсутствует
+                        {% endthumbnail %} <br>
+                    {% endif %}
+                    Текст: {{ idea.text|safe }}
+                </p>
+                {% if username %}
+                    <a href="{% url 'ideas:vote' idea.id 1 %}"><img src="{% static "dobro_like.jpg" %}" width="30px"
+                                                                    height="40px"></a>{{ idea.dobro_like }}
+                    <a href="{% url 'ideas:vote' idea.id 2 %}"><img src="{% static "radost_like.jpg" %}" width="30px"
+                                                                    height="40px"></a>{{ idea.radost_like }}
+                    <a href="{% url 'ideas:vote' idea.id 3 %}"><img src="{% static "razvitie_like.jpg" %}" width="30px"
+                                                                    height="40px"></a>{{ idea.razvitie_like }}
+
+                    <a href="{% url 'ideas:edit' idea.id %}" class='button'>Редактировать</a>
+                    <a href="{% url 'ideas:delete' idea.id %}" class='button'>Удалить</a>
+
+                    {% if idea.published %}
+                        <a href="{% url 'ideas:public' idea.id %}" class='button'>Снять с публикации</a>
+                    {% else %}
+                        <a href="{% url 'ideas:public' idea.id %}" class='button'>Опубликовать</a>
+                    {% endif %}
+                {% endif %}
                 <hr>
             {% empty %}
                 <p>Новых идей не обнаружено :(</p>

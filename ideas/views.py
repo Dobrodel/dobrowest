@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.contrib import auth
-from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 from django.shortcuts import redirect
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from accounts.models import CustomUser
 from facts.models import Facts
@@ -13,40 +15,48 @@ from ideas.models import Ideas
 TEMPLATE_IDEAS = 'dobroboad.html'
 
 
+def get_rollback_url( request ):
+    return request.META['HTTP_REFERER']
+
+
+class IdeasMixin(object):
+    def get_context_data( self, **kwargs ):
+        ret = super(IdeasMixin, self).get_context_data(**kwargs)
+        ret['username'] = auth.get_user(self.request).username
+        return ret
+
+        # def dispatch( self, *args, **kwargs ):
+        # decorators = getattr(self, 'decorators', [])
+        #    base = super(IdeasMixin, self).dispatch
+        #
+        #    for decorator in decorators:
+        #        base = decorator(base)
+        #    return base(*args, **kwargs)
+
 # ------------------------------------------------------------------
 #
 #   Отображает опубликованные добрые идеи
 #
 #------------------------------------------------------------------
-class Dobroboad(ListView):
+class Dobroboad(IdeasMixin, ListView, ):
     model = Ideas
     template_name = TEMPLATE_IDEAS
     paginate_by = 2
     queryset = Ideas.objects.filter(published = True).order_by('type')
 
-    def get_context_data( self, **kwargs ):
-        ret = super(Dobroboad, self).get_context_data(**kwargs)
-        ret['username'] = auth.get_user(self.request).username
-        return ret
-
 show_dashboad = Dobroboad.as_view()
 
-
+# ------------------------------------------------------------------
+#
+# Обрабатывает создание новых идей
+#
+# ------------------------------------------------------------------
 class IdeasCreate(CreateView):
-    model = Facts
+    model = Ideas
     form_class = IdeasForm
     http_method_names = ['post']
-    template_name = 'idea_create.html'
+    template_name = 'idea_to_create.html'
     #succes_url = '/success/'
-
-    def get_context_data( self, **kwargs ):
-        ret = super(IdeasCreate, self).get_context_data(**kwargs)
-        ret.update({ "username": auth.get_user(self.request).username })
-    #    fact_id = self.request.session['fact_id']
-    #    ret['object'] = Facts.objects.get(id = fact_id)
-    #    ret['form_create'] = IdeasForm(initial = { 'fact': fact_id })
-    #    ret['ideas_list'] = Ideas.objects.filter(fact_id = fact_id)
-        return ret
 
     def form_valid( self, form ):
         id = self.request.session['fact_id']
@@ -61,8 +71,109 @@ class IdeasCreate(CreateView):
             form.save()
         except Exception as e:
             return self.form_invalid(form)
-        #return self.render_to_response(self.get_context_data(
-                #success_message = 'Запись добавлена успешно!'))
-        return redirect(reverse('facts:detail', args = [id]))
+        return redirect(get_rollback_url(self.request))
+        # return redirect(reverse('facts:detail', args = [id]))
 
-create_idea = IdeasCreate.as_view()
+
+icreate = IdeasCreate.as_view()
+
+
+class IdeaEdit(UpdateView):
+    model = Ideas
+    form_class = IdeasForm
+    # fields = '[text]'
+    # http_method_names = ['post']
+    template_name = 'idea_to_edit.html'
+
+    # def dispatch(self, request, *args, **kwargs):
+    #        self.get_context_data(kwargs)
+    #        return super(IdeaEdit,self).dispatch(request)
+
+
+    def get_context_data( self, **kwargs ):
+        ret = super(IdeaEdit, self).get_context_data(**kwargs)
+        ret['idea_id'] = self.kwargs['pk']
+        url = get_rollback_url(self.request)
+        #self.request.session['urlback'] = "/".join(url.split('/')[-4:])
+        self.request.session['urlback'] = url
+        return ret
+
+    def get_success_url( self ):
+        ret = self.request.session['urlback']
+
+        return ret
+        #decorators = 'login_required'
+
+        #def get_initial( self ):
+        #    # GET method is allowed, so we need to have some antispam protection
+        #    article = self.object.fact
+        #    referer = urlparse(self.request.META.get('HTTP_REFERER', ''))
+        #    if article.id not in referer.path:  # /slug/
+        #        raise PermissionDenied()
+        #    return self.initial
+
+        #def form_invalid(self, form):
+        #    return super(IdeaEdit, self).form_invalid(form)
+
+
+iedit = IdeaEdit.as_view()
+
+
+class IdeaDelete(IdeasMixin, DeleteView):
+    model = Ideas
+    form_class = IdeasForm
+    template_name = 'idea_to_delete.html'
+
+    def get_context_data( self, **kwargs ):
+        ret = super(IdeaDelete, self).get_context_data(**kwargs)
+        url = get_rollback_url(self.request)
+        self.request.session['urlback'] = "/".join([x for x in url.split('/') if not '?' in x])
+        return ret
+
+    def get_success_url( self ):
+        ret = self.request.session['urlback']
+        return ret
+
+
+idelete = IdeaDelete.as_view()
+# ------------------------------------------------------------------
+#
+# Обрабатывает голосование за идею по трем принципам
+#
+# ------------------------------------------------------------------
+def ivote( request, pk, like_id ):
+    resp = redirect(request.META['HTTP_REFERER'])  # get_url_from_session(request))
+    like_id = int(like_id)
+    try:
+        # if not id_idea in request.COOKIES:
+        ideas = Ideas.objects.get(id = pk)
+        if like_id == 1:
+            ideas.dobro_like += 1
+        elif like_id == 2:
+            ideas.radost_like += 1
+        elif like_id == 3:
+            ideas.razvitie_like += 1
+
+        ideas.save()
+        #resp.set_cookie(id_blog, "test")
+        return resp  #redirect('/facts/get/1/1/')
+        #else:
+        #    return redirect('/')
+    except ObjectDoesNotExist:
+        raise Http404
+
+
+# ------------------------------------------------------------------
+#
+# Обрабатывает публикацию новых идей
+#
+# ------------------------------------------------------------------
+def ipublic( request, pk ):
+    resp = redirect(request.META['HTTP_REFERER'])  # get_url_from_session(request))
+    try:
+        ideas = Ideas.objects.get(id = pk)
+        ideas.published = False if ideas.published else True
+        ideas.save()
+        return resp
+    except ObjectDoesNotExist:
+        raise Http404

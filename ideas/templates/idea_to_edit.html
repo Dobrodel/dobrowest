@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+{% block idea_edit %}
+    <div class="comment-form-container">
+        <form class="comment-form" method="post" enctype="multipart/form-data" action="{% url 'ideas:edit' idea_id %}">
+            <div style="color: red;">{{ form.errors }}</div>
+            {% csrf_token %}
+            {% include 'fields.html' %}
+            <input type="submit" class='button' value="Обновить идею">
+        </form>
+    </div>
+    <hr>
+{% endblock %}

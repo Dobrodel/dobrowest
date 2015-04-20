@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import auth
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import redirect
 from django.views.generic import  ListView, DetailView
+
 from dobrowest.test import fillDB
 from ideas.forms import IdeasForm
 from ideas.models import Ideas
@@ -52,25 +50,3 @@ class FactDetail(DetailView):
         return ret
 
 show_detail = FactDetail.as_view()
-
-
-def add_like(request, id_idea, like_id):
-    resp = redirect(request.META['HTTP_REFERER']) #get_url_from_session(request))
-    like_id = int(like_id)
-    try:
-        #if not id_idea in request.COOKIES:
-        ideas = Ideas.objects.get(id=id_idea)
-        if like_id == 1:
-            ideas.dobro_like += 1
-        elif like_id == 2:
-            ideas.radost_like += 1
-        elif like_id == 3:
-            ideas.razvitie_like += 1
-
-        ideas.save()
-        #resp.set_cookie(id_blog, "test")
-        return resp#redirect('/facts/get/1/1/')
-        #else:
-        #    return redirect('/')
-    except ObjectDoesNotExist:
-        raise Http404

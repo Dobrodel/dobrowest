@@ -1,6 +1,6 @@
 {% if username %}
     <div class="comment-form-container">
-        <form class="comment-form" method="post" enctype="multipart/form-data" action="{% url 'ideas:add' %}">
+        <form class="comment-form" method="post" enctype="multipart/form-data" action="{% url 'ideas:create' %}">
             <div style="color: red;">{{ form.errors }}</div>
             {% csrf_token %}
             {{ success_message }}
