@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf.global_settings import LOGIN_URL
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
@@ -19,26 +20,34 @@ def get_rollback_url( request ):
     return request.META['HTTP_REFERER']
 
 
-class IdeasMixin(object):
+#
+# Позволяет детям производить операции только авторизированным пользователям
+#
+#
+
+class UserPassesTestMixin(object):
+    def user_passes_test( self, user ):
+        return user.is_authenticated()
+
+    def user_failed_test( self ):
+        return redirect(LOGIN_URL)
+
+    def dispatch( self, request, *args, **kwargs ):
+        if not self.user_passes_test(request.user):
+            return self.user_failed_test()
+        return super(UserPassesTestMixin, self).dispatch(request, *args, **kwargs)
+
     def get_context_data( self, **kwargs ):
-        ret = super(IdeasMixin, self).get_context_data(**kwargs)
+        ret = super(UserPassesTestMixin, self).get_context_data(**kwargs)
         ret['username'] = auth.get_user(self.request).username
         return ret
-
-        # def dispatch( self, *args, **kwargs ):
-        # decorators = getattr(self, 'decorators', [])
-        #    base = super(IdeasMixin, self).dispatch
-        #
-        #    for decorator in decorators:
-        #        base = decorator(base)
-        #    return base(*args, **kwargs)
 
 # ------------------------------------------------------------------
 #
 #   Отображает опубликованные добрые идеи
 #
 #------------------------------------------------------------------
-class Dobroboad(IdeasMixin, ListView, ):
+class Dobroboad(UserPassesTestMixin, ListView, ):
     model = Ideas
     template_name = TEMPLATE_IDEAS
     paginate_by = 2
@@ -51,11 +60,12 @@ show_dashboad = Dobroboad.as_view()
 # Обрабатывает создание новых идей
 #
 # ------------------------------------------------------------------
-class IdeasCreate(CreateView):
+class IdeasCreate(UserPassesTestMixin, CreateView):
     model = Ideas
     form_class = IdeasForm
     http_method_names = ['post']
     template_name = 'idea_to_create.html'
+    decorators = ['login_required']
     #succes_url = '/success/'
 
     def form_valid( self, form ):
@@ -78,12 +88,11 @@ class IdeasCreate(CreateView):
 icreate = IdeasCreate.as_view()
 
 
-class IdeaEdit(UpdateView):
+class IdeaEdit(UserPassesTestMixin, UpdateView):
     model = Ideas
     form_class = IdeasForm
-    # fields = '[text]'
-    # http_method_names = ['post']
     template_name = 'idea_to_edit.html'
+    decorators = ['login_required', ]
 
     # def dispatch(self, request, *args, **kwargs):
     #        self.get_context_data(kwargs)
@@ -119,10 +128,11 @@ class IdeaEdit(UpdateView):
 iedit = IdeaEdit.as_view()
 
 
-class IdeaDelete(IdeasMixin, DeleteView):
+class IdeaDelete(UserPassesTestMixin, DeleteView):
     model = Ideas
     form_class = IdeasForm
     template_name = 'idea_to_delete.html'
+    decorators = ['login_required']
 
     def get_context_data( self, **kwargs ):
         ret = super(IdeaDelete, self).get_context_data(**kwargs)
