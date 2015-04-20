@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib import auth
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView
 
@@ -42,10 +44,6 @@ class IdeasCreate(CreateView):
     def get_context_data( self, **kwargs ):
         ret = super(IdeasCreate, self).get_context_data(**kwargs)
         ret.update({ "username": auth.get_user(self.request).username })
-    #    fact_id = self.request.session['fact_id']
-    #    ret['object'] = Facts.objects.get(id = fact_id)
-    #    ret['form_create'] = IdeasForm(initial = { 'fact': fact_id })
-    #    ret['ideas_list'] = Ideas.objects.filter(fact_id = fact_id)
         return ret
 
     def form_valid( self, form ):
@@ -61,8 +59,28 @@ class IdeasCreate(CreateView):
             form.save()
         except Exception as e:
             return self.form_invalid(form)
-        #return self.render_to_response(self.get_context_data(
-                #success_message = 'Запись добавлена успешно!'))
         return redirect(reverse('facts:detail', args = [id]))
 
 create_idea = IdeasCreate.as_view()
+
+
+def addlike( request, id_idea, like_id ):
+    resp = redirect(request.META['HTTP_REFERER'])  # get_url_from_session(request))
+    like_id = int(like_id)
+    try:
+        # if not id_idea in request.COOKIES:
+        ideas = Ideas.objects.get(id = id_idea)
+        if like_id == 1:
+            ideas.dobro_like += 1
+        elif like_id == 2:
+            ideas.radost_like += 1
+        elif like_id == 3:
+            ideas.razvitie_like += 1
+
+        ideas.save()
+        #resp.set_cookie(id_blog, "test")
+        return resp  #redirect('/facts/get/1/1/')
+        #else:
+        #    return redirect('/')
+    except ObjectDoesNotExist:
+        raise Http404
