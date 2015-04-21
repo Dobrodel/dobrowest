@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import smtplib
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+
+from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 from django.core.mail import send_mail
+
 from dobrowest import settings
 
 
@@ -20,22 +20,46 @@ __author__ = 'adam'
 #
 #-----------------------------------------------------
 #
-from django.core.paginator import Paginator
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render_to_response, redirect
 from django.contrib import auth
-from django.template.response import TemplateResponse
 from django.core.context_processors import csrf
 # -----------------------------------------------------
 #
 #   Импортируй свои модели
 #
 # -----------------------------------------------------
-from invitations.models import Invitations
 from forms import InvitationForm
-from dobrowest.functions import generate_password, get_url_from_session, save_url_to_session
 from accounts.models import CustomUser
 
 KEY_INVITATION = 'invitation_key'
+# -----------------------------------------------------
+#
+# Функция сохраняет в сессии текущий путь с которого уходим
+#
+# -----------------------------------------------------
+def save_url_to_session( request ):
+	# Записываем текущий путь до страницы
+	global CURRENT_URL_TAG
+	request.session[CURRENT_URL_TAG] = request.get_full_path()
+
+
+# -----------------------------------------------------
+#
+# Функция генерирует пароль заданной длины
+#
+# -----------------------------------------------------
+def generate_password( min_len = 8 ):
+	return ''.join([choice(string.letters + string.digits) for i in range(min_len)])
+
+
+# -----------------------------------------------------
+#
+# Функция восстанавливает из сессии предыдущий путь
+#
+# -----------------------------------------------------
+def get_url_from_session( request ):
+	global CURRENT_URL_TAG
+	request.session[CURRENT_URL_TAG]
 #
 #-----------------------------------------------------
 #  

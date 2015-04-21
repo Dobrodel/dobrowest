@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.conf.global_settings import LOGIN_URL
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
@@ -8,6 +7,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from accounts.models import CustomUser
+from dobrowest.utils import UserPassesTestMixin
 from facts.models import Facts
 from ideas.forms import IdeasForm
 from ideas.models import Ideas
@@ -19,28 +19,6 @@ TEMPLATE_IDEAS = 'dobroboad.html'
 def get_rollback_url( request ):
     return request.META['HTTP_REFERER']
 
-
-#
-# Позволяет детям производить операции только авторизированным пользователям
-#
-#
-
-class UserPassesTestMixin(object):
-    def user_passes_test( self, user ):
-        return user.is_authenticated()
-
-    def user_failed_test( self ):
-        return redirect(LOGIN_URL)
-
-    def dispatch( self, request, *args, **kwargs ):
-        if not self.user_passes_test(request.user):
-            return self.user_failed_test()
-        return super(UserPassesTestMixin, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data( self, **kwargs ):
-        ret = super(UserPassesTestMixin, self).get_context_data(**kwargs)
-        ret['username'] = auth.get_user(self.request).username
-        return ret
 
 # ------------------------------------------------------------------
 #
