@@ -14,13 +14,14 @@ from os.path import splitext
 from django.conf.global_settings import LOGIN_URL
 from django.contrib import auth
 from django.shortcuts import redirect
-from django.db import models
 from django.utils.safestring import mark_safe
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import filesizeformat
 
 # ---------------------------------------------------------------------
+from django_resized import ResizedImageField
+
 
 class UserPassesTestMixin(object):
 	'''
@@ -114,34 +115,44 @@ class FileValidator(object):
 				allowed_size = filesizeformat(self.max_size))
 			raise ValidationError(message)
 
-		elif filesize < self.min_size:
+		if self.min_size and filesize < self.min_size:
 			message = self.min_size_message.format(
 				size = filesizeformat(filesize),
 				allowed_size = filesizeformat(self.min_size))
 			raise ValidationError(message)
 
 
-def CustomImageFields( verbose_name = u'Изображение', blank = True ):
+class CustomImageFields(ResizedImageField):
 	'''
 	   Функция создает поле для изображения для построения модели
 	   И использует следующие ограничения при его загрузке:
 	   Минимальный размер файла -  15Kb
-	   Максимальный размер файла - 600Kb
 	   Допустимые расширения файлов - 'bmp','png','jpg','jpeg','gif'
 	'''
 	MIN_IMAGE_SIZE = 60 * 1024  # 15Kb
-	MAX_IMAGE_SIZE = 0.6 * 1024 * 1024  # 600Kb
+	MAX_IMAGE_WIDTH = 800
+	MAX_IMAGE_HEITHT = 600
 	IMAGE_EXTENSIONS = ['bmp', 'png', 'jpg', 'jpeg', 'gif', ]
 
-	img = models.FileField(upload_to = get_path_to_image,
-	                       verbose_name = verbose_name,
-	                       blank = blank, null = True,
-	                       validators = [FileValidator(
-		                       allowed_extensions = IMAGE_EXTENSIONS,  # allowed_mimetypes=IMAGE_CONTEXT_TYPES,
-		                       min_size = MIN_IMAGE_SIZE,
-		                       max_size = MAX_IMAGE_SIZE)]
-	                       )
-	return img
+	def __init__( self, verbose_name = u'Изображение', blank = True, **kwargs ):
+		self.size = [self.MAX_IMAGE_WIDTH, self.MAX_IMAGE_HEITHT]
+		self.crop = ['middle', 'center']
+		self.upload_to = get_path_to_image
+		self.blank = blank
+		self.null = True
+		self.validators = [FileValidator(
+			allowed_extensions = self.IMAGE_EXTENSIONS,
+			min_size = self.MIN_IMAGE_SIZE)]
+		super(CustomImageFields, self).__init__(verbose_name = verbose_name, name = None, **kwargs)
+
+	# img = models.FileField(upload_to = get_path_to_image,
+	#                       verbose_name = verbose_name,
+	##                       blank = blank, null = True,
+	#                       validators = [FileValidator(
+	#	                       allowed_extensions = IMAGE_EXTENSIONS,  # allowed_mimetypes=IMAGE_CONTEXT_TYPES,
+	#	                       min_size = MIN_IMAGE_SIZE,
+	#	                       max_size = MAX_IMAGE_SIZE)]
+	#                       )
 
 
 def get_path_to_image( instance, filename ):

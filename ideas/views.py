@@ -106,6 +106,23 @@ class IdeaEdit(UserPassesTestMixin, UpdateView):
 iedit = IdeaEdit.as_view()
 
 
+def Iidelete( request, pk ):
+    '''
+        Удаяем переданную в pk запись
+    '''
+    resp = redirect(request.META['HTTP_REFERER'])
+    try:
+        ideas = Ideas.objects.get(id = pk)
+        if ideas.author.username == auth.get_user(request).username:
+            ideas.delete()
+        return resp
+    except ObjectDoesNotExist:
+        raise Http404
+
+
+def dialog_yes_no( request, answer ):
+    pass
+
 class IdeaDelete(UserPassesTestMixin, DeleteView):
     model = Ideas
     form_class = IdeasForm

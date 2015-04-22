@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     #'django_extensions',
     'pagination',
     'sorl.thumbnail',
+    'django_resized',
     # Мои модули
     'invitations',
     'accounts',

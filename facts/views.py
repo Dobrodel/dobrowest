@@ -21,7 +21,10 @@ class FactsView(ListView):
     template_name = TEMPLATE_FACTS
     model = Facts
     paginate_by = 2
-    fillDB()
+
+    def __init__( self ):
+        fillDB()
+        super(FactsView, self).__init__()
 
     def get_context_data( self, **kwargs ):
         ret = super(FactsView, self).get_context_data(**kwargs)

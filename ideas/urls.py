@@ -13,7 +13,7 @@ urlpatterns = [
 	url(r'^vote/(?P<pk>\d+)/(?P<like_id>\d+)/$', 'ideas.views.ivote', name = 'vote'),
 	url(r'^public/(?P<pk>\d+)/$', 'ideas.views.ipublic', name = 'public'),
 	url(r'^edit/(?P<pk>\d+)/$', 'ideas.views.iedit', name = 'edit'),
-	url(r'^(?P<pk>\d+)/delete/$', 'ideas.views.idelete', name = 'delete'),
+	url(r'^delete/(?P<pk>\d+)/$', 'ideas.views.idelete', name = 'delete'),
 	#url(r'^page/(?P<page>\d+)/$', 'ideas.views.show_list'),
     #url(r'^', 'ideas.views.show_dashboad'),
 
