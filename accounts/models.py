@@ -10,7 +10,7 @@ from django.db.models.signals import post_save
 #   На основании системной таблицы пользователей Users
 #
 #--------------------------------------------------------------------
-from dobrowest.utils import CustomImageFields
+from vsekdobru.utils import CustomImageFields
 
 
 class CustomUser(User):

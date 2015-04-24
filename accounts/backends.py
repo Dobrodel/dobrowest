@@ -3,7 +3,7 @@ __author__ = 'adam'
 #
 # -----------------------------------------------------
 #   
-#   Проект: dobrowest
+# Проект: vsekdobru
 #   Имя файла: backends.py
 #   Дата создания: 10.04.15 
 #   Время создания: 8:19
@@ -12,7 +12,9 @@ __author__ = 'adam'
 #-----------------------------------------------------
 #
 from django.contrib.auth.backends import ModelBackend
+
 from accounts.models import CustomUser
+
 
 class CustomUserModelBackend(ModelBackend):
 

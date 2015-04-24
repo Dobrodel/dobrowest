@@ -26,6 +26,7 @@
         </div>
 		<h1><a href="/">Свежие вести</a></h1>
         <h5><a href="/admin/">Администратор</a></h5>
+        <h6><a href="{% url 'test' %}">Тестовое наполнение БД</a></h6>
 		<div class="large-offset-3 large-6 columns">
 		    {% block factsblock %}{% endblock %}
             {% block fact_detail %}{% endblock %}

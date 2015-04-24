@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-	   Проект: dobrowest
+	   Проект: vsekdobru
 	   Имя файла: forms.py
 	   Дата создания: 16.04.15
 	   Время создания: 19:40
@@ -9,7 +9,7 @@
 from django.forms import ModelForm, widgets
 
 from ideas.models import Ideas
-from dobrowest.utils import ImageWidget
+from vsekdobru.utils import ImageWidget
 
 
 

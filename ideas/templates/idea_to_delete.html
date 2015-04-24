@@ -3,8 +3,8 @@
     <form action="" method="post">
         {% csrf_token %}
         <p>Вы уверены, что хотите удалить "{{ object }}"?</p>
-        <a class="button" href="/">Отменить</a>
-        <input type="submit" value="Удалить"/>
+        <a class="button" href="{% url "detail" object.fact_id %}">Отменить</a>
+        <input class="button" type="submit" value="Удалить"/>
 
     </form>
 {% endblock %}

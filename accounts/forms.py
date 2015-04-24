@@ -3,7 +3,7 @@ __author__ = 'adam'
 #
 # -----------------------------------------------------
 #   
-#   Проект: dobrowest
+# Проект: vsekdobru
 #   Имя файла: forms.py
 #   Дата создания: 10.04.15 
 #   Время создания: 6:43
@@ -13,7 +13,9 @@ __author__ = 'adam'
 #
 #from django import forms
 from django.contrib.auth.forms import UserChangeForm
+
 from accounts.models import CustomUser
+
 #from allauth.account.forms import SetPasswordField, PasswordField
 #from invitations.models import Invitations
 

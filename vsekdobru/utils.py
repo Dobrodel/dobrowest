@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-	Проект: dobrowest
+	Проект: vsekdobru
     Имя файла: utils.py
     Дата создания: 13.04.15
     Время создания: 12:19
@@ -18,6 +18,7 @@ from django.utils.safestring import mark_safe
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import filesizeformat
+
 
 # ---------------------------------------------------------------------
 from django_resized import ResizedImageField

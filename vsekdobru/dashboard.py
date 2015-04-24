@@ -5,10 +5,10 @@ contains the two classes for the main dashboard and app index dashboard.
 You can customize these classes as you want.
 
 To activate your index dashboard add the following to your settings.py::
-    ADMIN_TOOLS_INDEX_DASHBOARD = 'dobrowest.dashboard.CustomIndexDashboard'
+    ADMIN_TOOLS_INDEX_DASHBOARD = 'vsekdobru.dashboard.CustomIndexDashboard'
 
 And to activate the app index dashboard::
-    ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dobrowest.dashboard.CustomAppIndexDashboard'
+    ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'vsekdobru.dashboard.CustomAppIndexDashboard'
 """
 
 from django.utils.translation import ugettext_lazy as _
@@ -18,7 +18,7 @@ from admin_tools.utils import get_admin_site_name
 
 class CustomIndexDashboard(Dashboard):
     """
-    Custom index dashboard for dobrowest.
+    Custom index dashboard for vsekdobru.
     """
 
 
@@ -141,7 +141,7 @@ class CustomIndexDashboard(Dashboard):
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
-    Custom app index dashboard for dobrowest.
+    Custom app index dashboard for vsekdobru.
     """
 
     # we disable title because its redundant with the model list module

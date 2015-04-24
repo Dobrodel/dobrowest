@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from accounts.models import CustomUser
-from dobrowest.utils import UserPassesTestMixin
+from vsekdobru.utils import UserPassesTestMixin
 from facts.models import Facts
 from ideas.forms import IdeasForm
 from ideas.models import Ideas

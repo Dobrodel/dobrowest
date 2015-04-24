@@ -19,7 +19,7 @@ from admin_tools.utils import get_admin_site_name
 
 class CustomIndexDashboard(Dashboard):
     """
-    Custom index dashboard for dobrowest.
+    Custom index dashboard for vsekdobru.
     """
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
@@ -85,7 +85,7 @@ class CustomIndexDashboard(Dashboard):
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
-    Custom app index dashboard for dobrowest.
+    Custom app index dashboard for vsekdobru.
     """
 
     # we disable title because its redundant with the model list module

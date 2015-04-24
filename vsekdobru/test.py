@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.models import User
+from django.shortcuts import redirect
+
 
 __author__ = 'adam'
 #
 # -----------------------------------------------------
 #
-#   Проект: dobrowest
+# Проект: vsekdobru
 #   Имя файла: test.py
 #   Дата создания: 10.04.15 
 #   Время создания: 5:34
@@ -183,10 +184,16 @@ def createGoodNews():
             good.save()
 
 
-def fillDB():
+def fillDB( req = 0 ):
     if Ideas.objects.count() == 0:
         createUsers()
         createCategories()
         createTags()
         createFacts()
         createGoodNews()
+    else:
+        print("")
+        print("Внимание! База данных уже заполнена!")
+        print("Пожалуйста очистите таблицу dobro_ideas и затем запустите заполнение вновь!")
+        print("")
+    return redirect('/')

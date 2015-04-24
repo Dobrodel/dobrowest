@@ -2,9 +2,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from dobrowest.utils import CustomImageFields
+from vsekdobru.utils import CustomImageFields
 from facts.models import Facts
 from accounts.models import CustomUser
+
 
 
 #--------------------------------------------------------------------

@@ -4,7 +4,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from dobrowest import settings
+from vsekdobru import settings
 
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
                 url(r'^facts/', include('facts.urls', namespace = 'facts')),
                 url(r'^ideas/', include('ideas.urls', namespace = 'ideas')),
                 url(r'^invitations/', include('invitations.urls')),
+                url(r'^filldb/', 'vsekdobru.test.fillDB', name = 'test'),
                 url(r'^', include('facts.urls')),
             ]
 if settings.DEBUG:

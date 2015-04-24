@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load pagination_tags %}
 {% autopaginate ideas_list 2 %}
+{% static 'img/no-photo-big.gif' as nopic %}
 {% block ideas_block %}
     <div class="row">
         <div class="large-0 large-offset-0  columns">
@@ -17,17 +18,19 @@
                     {% if idea.foto %}
                         {% load thumbnail %}
                         {% thumbnail idea.foto.path "2000x2000" as big %}
-                            {% thumbnail idea.foto.path "200x200" padding_color="#aabbbd3" padding=True crop="center" as small %}
+                            {% thumbnail idea.foto.path "350x200" padding_color="#aabbbd3" padding=True crop="top" as small %}
                                 <a href="{{ big.url }}"><img style="margin:{{ small|margin:"200x200" }}"
                                                              src="{{ small.url }}"></a>
-                                <div class="millxmill">
-                                    <img src="{{ small.url|resolution:"5x" }}">
-                                </div>
-                        {% empty %}
-                                отсутствует;
+                            {% empty %}
+                                {% thumbnail nopic.url "350x200" as np %}
+                                    <a href="{% url 'ideas:edit' idea.id %}" class='golink'><img src="{{ np.url }}"></a>
+                                {% endthumbnail %}
                             {% endthumbnail %}
-                        {% endthumbnail %} <br>
+                        {% endthumbnail %}
+                    {% else %}
+                        <a href="{% url 'ideas:edit' idea.id %}" class='golink'><img src="{{ nopic }}"></a>
                     {% endif %}
+                    <br>
                     Текст: {{ idea.text|safe }}
                 </p>
                 {% if username %}
