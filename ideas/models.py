@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.core import urlresolvers
 from django.core.exceptions import ValidationError
 from django.db import models
 
 from vsekdobru.utils import CustomImageFields
 from facts.models import Facts
 from accounts.models import CustomUser
+
 
 
 
@@ -82,6 +84,10 @@ class Ideas(models.Model):
     # Указатель тегов/категорий новостей,
     # как "много в DobroNews к много в Tags"
     tag = models.ManyToManyField(Tags, verbose_name = u"Метки статьи", blank = True, default = None)
+
+
+    def get_absolute_url( self ):
+        return urlresolvers.reverse('ideas:edit', args = (self.pk,))
 
     def get_tags_list(self):
         return u", ".join([tag.name for tag in self.tag.all()])

@@ -11,18 +11,16 @@ from django.forms import ModelForm, widgets
 from ideas.models import Ideas
 from vsekdobru.utils import ImageWidget
 
-
-
-
 #-----------------------------------------------------
 #
 #   Класс описывает форму ввода ...
 #
 #-----------------------------------------------------
 #
+
 class IdeasForm(ModelForm):
 	'''
-		Класс описывает форму ввода идей
+	#	Класс описывает форму ввода идей
 	'''
 	class Meta():
 		model = Ideas
@@ -33,4 +31,3 @@ class IdeasForm(ModelForm):
 		'text': widgets.Textarea(attrs = { 'placeholder': u'Добавьте добрую идею!' })
 		}
 
-#	newtag = forms.CharField( widget=widgets.TextInput(attrs = { 'placeholder': 'Добавьте или найдите существующую метку!' }))

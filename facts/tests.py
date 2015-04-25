@@ -25,8 +25,7 @@ class AuthorsTest(LiveServerTestCase):
 	def test_login( self ):
 		drv = self.selenium
 		user = Client()
-		try
-			login_url = reverse('account_login', args = [])
+		login_url = reverse('account_login', args = [])
 		user.post(login_url, { 'login': 'adam', 'password': '12345' })
 		#self.selenium.get(os.path.join(self.live_server_url, reverse('facts:detail', args = [3])))
 		drv.get(os.path.join(self.live_server_url, reverse('facts:detail', args = [1])))
